@@ -1,0 +1,89 @@
+<!-- Header fixo no topo com altura de 100px -->
+<section class="h-screen w-full flex flex-col md:flex-row">
+  <header
+    class="w-full h-[100px] p-4 bg-white shadow-md z-10 md:w-[250px] md:h-full"
+  >
+    <nav
+      class="max-w-[1280px] h-full rounded-lg flex justify-between items-center gap-4 mx-auto relative md:h-full md:flex-col md:justify-center"
+    >
+      <img
+        class="h-[70px] w-auto md:mb-12"
+        src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQwNGg8PGjclHyU3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3N//AABEIAJQAtwMBIgACEQEDEQH/xAAaAAEAAwEBAQAAAAAAAAAAAAAAAQMEAgUH/8QAKxABAAIBAgUDBAEFAAAAAAAAAAECEQMhBBIxQVEyYXETgZGhIhQzUrHw/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAH/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwD7iAAAAAAAADmb1B0K/qR2g+p7AsFf1PaXUXrPSQdAAAAAAAAAAAAAAATsArtqY2hze0z8OQTMzPVAAAAAAmLTHSVlbxPyqAaBXS/aVgAAAAAAAAAACrUtnaHd5xX5UgAAAibRWMzMRHuCRnvxUROKV+8uP6q/eK/gGsUU4mszi8Yme/ZfE5jMdAAAFmnbOys6bg0CKzmMpAAAAAAABEzgFWpObezkneQAABi19Wb2x2js1a040bTHhgAAVBfw2rMTyW6T09lBnG4PSEROYifMJRQAHelPZaorOJXwAAAAAAAi3SUub+mQUgAAAr4j+xf4YXoXrz0tXzDBO0zHhRAAgCaxzWiPIN9PRX4dGMREeBFAAF8dFC+vSASAAAAAAiekpAZxNoxMoAAAZ+I0c/zpG/eGgmcddgeaN9q6d97cufOXH0dH/pBkiJmcRGZa9DR5I5p9U/p3SNOm1eWPu7z43+AAAAAI6w0KaRmy4AAAAAAAAFepHeFa+Y2wptHLIIc2tFazNpxEOmLiNTnvMR6Y6AnU4i9tqzyx7KZ367gqGxsABG3Tb4AF+nxNoxGpOY8tUTneN4ecv4W+LckztPRFawdUjmkHenGK/LsAAAAAAAAAEWrzQkBm1M1raZ7POevqUjUrNZ793na/D30pnbNe0wopAEAAAAE1nFon3Qv0OFvqTFpzWv8AsGyteZdWMIrWKxER2dIoAAAAAAAAAAAAiYz1SAz6vCad96/xn26M1+D1I9Mxb9PRAeTOhq1nfTt+EfS1P8Lfh64DyY0NWemnb77LqcFqT65iv7b8JBRpcLp6e+Mz5leAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP//Z"
+        alt="User image"
+      />
+
+      <ul
+        class="absolute bg-white w-screen pb-20 shadow-md hidden left-[-12px] top-[80px] z-11 transition duration-300 md:block md:h-3/5 md:w-fit md:relative md:top-0 md:shadow-none md:bg-transparent md:flex md:flex-col md:gap-4"
+      >
+        <li
+          class="text-lg gap-4 flex justify-start group items-center p-2 rounded-lg transition duration-300"
+          *ngFor="let link of navLinks; let i = index"
+        >
+          <mat-icon class="group-hover:translate-x-2 transition duration-300">{{
+            link.iconValue
+          }}</mat-icon>
+          <a
+            class="group-hover:translate-x-2 transition duration-300"
+            [id]="i"
+            >{{ link.linkHref }}</a
+          >
+        </li>
+      </ul>
+      <button
+        class="hidden bg-[#292934] z-12 p-3 rounded-lg text-white flex items-center justify-center gap-2 md:flex md:relative md:top-0 md:left-[-16px] hover:opacity-75 transition duration-500"
+        (click)="logOut()"
+      >
+        <mat-icon>logout</mat-icon>
+        Sair da conta
+      </button>
+
+      <!-- Mobile  -->
+      <div
+        class="transition-all duration-300 md:hidden"
+        [ngClass]="{
+          ' opacity-0 shadow-none': !isNavOpen,
+          ' opacity-100 shadow-lg': isNavOpen
+        }"
+      >
+        <ul
+          class="pt-4 pl-5 absolute bg-white w-screen pb-22 shadow-md space-y-2 left-[-16px] top-[80px] z-11 transition duration-300 md:h-3/5 md:w-fit md:relative md:top-0 md:shadow-none md:bg-transparent md:flex md:flex-col md:gap-4"
+        >
+          <li
+            class="text-lg gap-4 flex justify-start group items-center p-2 rounded-lg transition duration-300"
+            *ngFor="let link of navLinks; let i = index"
+          >
+            <mat-icon class="group-hover:translate-x-2 transition duration-300">
+              {{ link.iconValue }}
+            </mat-icon>
+            <a
+              class="group-hover:translate-x-2 transition duration-300"
+              [id]="i"
+              >{{ link.linkHref }}</a
+            >
+          </li>
+        </ul>
+
+        <button
+          class="absolute left-[16px] top-[360px] bg-[#292934] z-12 p-3 rounded-lg text-white flex items-center justify-center gap-2 md:relative md:top-0 md:left-[-16px] hover:opacity-75 transition duration-500"
+          (click)="logOut()"
+        >
+          <mat-icon>logout</mat-icon>
+          Sair da conta
+        </button>
+      </div>
+
+      <i class="md:hidden">
+        <mat-icon (click)="toggleNav()">{{
+          isNavOpen ? "close" : "menu"
+        }}</mat-icon>
+      </i>
+    </nav>
+  </header>
+
+  <!-- Conteúdo principal -->
+  <main class="max-w-[1280px] h-[calc(100vh-100px)] p-8 md:p-22 md:h-full md:flex-1">
+    <h1 class="pt-2 text-3xl font-semibold">
+      Seja bem-vindo! <br />{{ username }}
+    </h1>
+  </main>
+</section>

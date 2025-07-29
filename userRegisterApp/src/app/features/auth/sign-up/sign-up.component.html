@@ -1,0 +1,182 @@
+<main>
+  <form
+    #signUpForm="ngForm"
+    (ngSubmit)="onSignUp(signUpForm)"
+    class="flex flex-col max-w-[550px] mx-auto m-4 mt-[12rem] justify-center login-container fade-in"
+  >
+    <div
+      class="flex flex-col justify-center items-center border border-gray-300 p-8 rounded-lg space-y-6 shadow-md"
+    >
+      <h1 class="text-2xl text-center font-bold mb-6">Crie sua conta</h1>
+      <div class="w-full flex flex-col space-y-2">
+        <input
+          name="username"
+          [(ngModel)]="newUser.username"
+          class="text-gray-500 w-full px-4 py-3 border border-gray-300 rounded-lg outline-none focus:outline-none focus:ring-2 focus:ring-black transition duration-200"
+          [ngClass]="{
+            'border-red-600 focus:ring-red-600':
+              usernameRef.invalid && (usernameRef.dirty || usernameRef.touched)
+          }"
+          placeholder="Usuário"
+          required
+          type="text"
+          #usernameRef="ngModel"
+        />
+
+        <!-- #usernameRef="ngModel" faz a ligação para mensagens de erro -->
+        <div
+          *ngIf="
+            usernameRef.invalid && (usernameRef.dirty || usernameRef.touched)
+          "
+          class="text-red-600 text-sm"
+        >
+          <span *ngIf="usernameRef.errors?.['required']"
+            >Nome de usuário é obrigatório.</span
+          >
+        </div>
+      </div>
+      <div class="w-full flex flex-col space-y-2">
+        <input
+          name="email"
+          [(ngModel)]="newUser.email"
+          class="text-gray-500 w-full px-4 py-3 border border-gray-300 rounded-lg outline-none focus:outline-none focus:ring-2 focus:ring-black transition duration-200"
+          [ngClass]="{
+            'border-red-600 focus:ring-red-600':
+              emailRef.invalid && (emailRef.dirty || emailRef.touched)
+          }"
+          placeholder="Email"
+          required
+          type="email"
+          #emailRef="ngModel"
+          aria-label="Email"
+          [attr.aria-describedby]="
+            emailRef.invalid && (emailRef.dirty || emailRef.touched)
+              ? 'username-error'
+              : null
+          "
+        />
+
+        <!-- #usernameRef="ngModel" faz a ligação para mensagens de erro -->
+        <div
+          *ngIf="emailRef.invalid && (emailRef.dirty || emailRef.touched)"
+          class="text-red-600 text-sm"
+        >
+          <span *ngIf="emailRef.errors?.['required']"
+            >Email é obrigatório.</span
+          >
+          <span *ngIf="emailRef.errors?.['email']"
+            >Formato de e-mail inválido.</span
+          >
+        </div>
+      </div>
+
+      <div class="w-full flex flex-col space-y-2">
+        <div class="relative">
+          <input
+            name="password"
+            [(ngModel)]="newUser.password"
+            class="text-gray-500 w-full px-4 py-3 border border-gray-300 rounded-lg outline-none focus:outline-none focus:ring-2 focus:ring-black transition duration-200"
+            [ngClass]="{
+              'border-red-600 focus:ring-red-600':
+                passwordRef.invalid &&
+                (passwordRef.dirty || passwordRef.touched)
+            }"
+            placeholder="Senha"
+            required
+            type="{{ isPasswordVisible ? 'text' : 'password' }}"
+            #passwordRef="ngModel"
+            minlength="6"
+            aria-label="Senha"
+            [attr.aria-describedby]="
+              passwordRef.invalid && (passwordRef.dirty || passwordRef.touched)
+                ? 'password-error'
+                : null
+            "
+          />
+          <mat-icon
+            class="absolute top-3.5 right-5"
+            (click)="togglePasswordVisibility()"
+            aria-hidden="true"
+          >
+            {{ isPasswordVisible ? "visibility_off" : "visibility" }}
+          </mat-icon>
+        </div>
+        <div
+          *ngIf="
+            passwordRef.invalid && (passwordRef.dirty || passwordRef.touched)
+          "
+          class="text-red-600 text-sm"
+        >
+          <span *ngIf="passwordRef.errors?.['required']"
+            >Senha é obrigatória.</span
+          >
+          <span *ngIf="passwordRef.errors?.['minlength']"
+            >Senha deve ter no mínimo 6 caracteres.
+          </span>
+        </div>
+      </div>
+
+      <div class="w-full flex flex-col space-y-2">
+        <div class="relative">
+          <input
+            name="confirmPassword"
+            [(ngModel)]="newUser.confirmPassword"
+            class="text-gray-500 w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:outline-black-500 transition duration-200"
+            [ngClass]="{
+              'border-red-600 focus:ring-red-600':
+                confirmPasswordRef.invalid &&
+                (confirmPasswordRef.dirty || confirmPasswordRef.touched)
+            }"
+            placeholder="Confirme sua Senha"
+            type="{{ isPasswordConfirmVisible ? 'text' : 'password' }}"
+            required
+            minlength="6"
+            #confirmPasswordRef="ngModel"
+            aria-label="Confirme sua Senha"
+            [attr.aria-describedby]="
+              confirmPasswordRef.invalid &&
+              (confirmPasswordRef.dirty || confirmPasswordRef.touched)
+                ? 'confirm-password-error'
+                : null
+            "
+          />
+          <mat-icon
+            class="absolute top-3.5 right-5"
+            (click)="toggleConfirmPasswordVisibility()"
+            aria-hidden="true"
+          >
+            {{ isPasswordConfirmVisible ? "visibility_off" : "visibility" }}
+          </mat-icon>
+          <!-- .dirty->alterado .touched->perdeu foco -->
+          <div
+            *ngIf="
+              confirmPasswordRef.invalid &&
+              (confirmPasswordRef.dirty || confirmPasswordRef.touched)
+            "
+            class="text-red-600 text-sm mt-2"
+          >
+            <span *ngIf="confirmPasswordRef.errors?.['required']"
+              >Senha é obrigatória.</span
+            >
+            <span *ngIf="confirmPasswordRef.errors?.['minlength']"
+              >Senha deve ter no mínimo 6 caracteres.
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <app-submit-button [loading]="loading"></app-submit-button>
+
+      <div
+        class="w-full flex flex-col items-center justify-center text-sm gap-2"
+      >
+        <p class="text-base text-gray-500" routerLink="/login">
+          Possui uma conta?
+          <a class="text-blue-500 cursor-pointer hover:underline"
+            >Entre na sua conta</a
+          >
+        </p>
+      </div>
+    </div>
+  </form>
+</main>

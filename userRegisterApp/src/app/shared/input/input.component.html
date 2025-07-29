@@ -1,0 +1,32 @@
+<div class="w-full flex flex-col space-y-2">
+  <div class="relative">
+    <input
+      [name]="nameInput"
+      [(ngModel)]="modelInput"
+      [type]="
+        typeInput === 'password' && !isPasswordVisible ? 'password' : 'text'
+      "
+      [placeholder]="placeholder"
+      required
+      class="text-gray-500 w-full px-4 py-3 border border-gray-300 rounded-lg outline-none focus:outline-none focus:ring-2 focus:ring-black transition duration-200"
+      [ngClass]="{
+        'border-red-600 focus:ring-red-600': isInvalid
+      }"
+      aria-label="input"
+    />
+
+    <mat-icon
+      *ngIf="typeInput === 'password'"
+      class="absolute top-3.5 right-5 cursor-pointer"
+      (click)="togglePasswordVisibility()"
+    >
+      {{ isPasswordVisible ? 'visibility' : 'visibility_off' }}
+    </mat-icon>
+  </div>
+
+  <div *ngIf="isInvalid" class="text-red-600 text-sm">
+    <span *ngIf="hasRequiredError">
+      {{ typeInput === 'password' ? 'Senha é obrigatória.' : 'Este campo é obrigatório.' }}
+    </span>
+  </div>
+</div>

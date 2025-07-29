@@ -1,0 +1,18 @@
+<button
+  type="submit"
+  class="w-fit bg-black text-white rounded-full px-6 py-3 mx-auto hover:opacity-75 disabled:opacity-50 transition duration-300 flex items-center gap-2"
+  [disabled]="loading"
+  [attr.aria-label]="loading ? 'Entrando...' : 'Entrar'"
+>
+  <!-- ng-container não renderiza igual template -->
+  <ng-container *ngIf="loading; else entrarTexto">
+    Entrando
+    <mat-progress-spinner
+      diameter="20"
+      mode="indeterminate"
+      color="accent"
+      class="!w-5 !h-5"
+    ></mat-progress-spinner>
+  </ng-container>
+  <ng-template #entrarTexto> Entrar </ng-template>
+</button>

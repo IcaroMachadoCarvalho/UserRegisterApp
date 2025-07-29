@@ -1,0 +1,24 @@
+# Node
+userRegisterApp/node_modules
+userRegisterApp/npm-debug.log
+userRegisterApp/yarn-error.log
+
+# Angular
+dist
+.angular
+.tsbuildinfo
+*.js.map
+*.css.map
+
+# VSCode
+.vscode/
+
+# Intellij/Webstorm
+.idea/
+
+# macOS
+.DS_Store
+
+# Outros
+/tmp
+*.log

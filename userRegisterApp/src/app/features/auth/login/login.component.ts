@@ -4,9 +4,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { NgClass, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { SnackbarService } from '../../../core/snackbar.service';
+import { SnackbarService } from '../../../core/services/snackbar.service';
 import { ContainerComponent } from '../../../shared/container/container.component';
 import { SubmitButtonComponent } from '../../../shared/submit-button/submit-button.component';
+import { AuthService } from '../../../core/auth/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -32,7 +33,8 @@ export class LoginComponent {
   };
   constructor(
     private snackbarService: SnackbarService,
-    private router: Router
+    private router: Router,
+    private auth:AuthService
   ) {}
 
   togglePasswordVisibility() {
@@ -56,6 +58,7 @@ export class LoginComponent {
       console.log(form.value);
       form.reset();
       this.snackbarService.showMessage('success');
+      this.auth.logInAccount()
       this.router.navigate(['/home']);
     }, 2000); // Simulate a 2-second delay for the login process
   }

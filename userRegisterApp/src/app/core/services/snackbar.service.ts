@@ -6,6 +6,7 @@ enum SnackbarMessageType {
   Error = 'error',
   Info = 'info',
   Warning = 'warning',
+  notLogged = 'not_logged_in'
 }
 
 @Injectable({
@@ -52,6 +53,13 @@ export class SnackbarService {
           // action: 'Fechar',
           panelClass: 'warning-snack-bar',
         };
+
+        case SnackbarMessageType.notLogged:
+          return{
+            text:"Usuário não está logado.",
+            action: "",
+            panelClass: 'info-snack-bar',
+          }
       default:
         return {
           text: 'Mensagem padrão.',

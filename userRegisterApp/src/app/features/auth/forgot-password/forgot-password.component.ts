@@ -3,7 +3,7 @@ import { NgClass, NgIf } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-import { SnackbarService } from '../../../core/snackbar.service';
+import { SnackbarService } from '../../../core/services/snackbar.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { SubmitButtonComponent } from '../../../shared/submit-button/submit-button.component';
 

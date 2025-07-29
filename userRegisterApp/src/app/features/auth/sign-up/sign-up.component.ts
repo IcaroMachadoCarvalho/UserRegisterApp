@@ -2,14 +2,21 @@ import { NgClass, NgIf } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-import { SnackbarService } from '../../../core/snackbar.service';
+import { SnackbarService } from '../../../core/services/snackbar.service';
 import { SubmitButtonComponent } from '../../../shared/submit-button/submit-button.component';
 import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-sign-up',
-  standalone:true,
-  imports: [FormsModule, NgIf, NgClass,MatIconModule, SubmitButtonComponent, RouterLink],
+  standalone: true,
+  imports: [
+    FormsModule,
+    NgIf,
+    NgClass,
+    MatIconModule,
+    SubmitButtonComponent,
+    RouterLink,
+  ],
   templateUrl: './sign-up.component.html',
   styleUrl: './sign-up.component.css',
 })
@@ -34,7 +41,6 @@ export class SignUpComponent {
   }
 
   onSignUp(form: any) {
-
     if (form.invalid) {
       console.log('Formulário inválido!');
       Object.values(form.controls).forEach((control: any) => {
@@ -50,6 +56,6 @@ export class SignUpComponent {
       this.snackbarService.showMessage('success');
       console.log(form.value);
       form.reset();
-    }, 2000); 
+    }, 2000);
   }
 }

@@ -22,3 +22,8 @@ dist
 # Outros
 /tmp
 *.log
+
+# Backend
+backend/node_modules
+backend/.env
+backend/anot.md

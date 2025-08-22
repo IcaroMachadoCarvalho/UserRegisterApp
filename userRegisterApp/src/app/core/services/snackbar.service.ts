@@ -62,7 +62,7 @@ export class SnackbarService {
           }
       default:
         return {
-          text: 'Mensagem padrão.',
+          text: type,
           action: 'Fechar',
           panelClass: 'default-snack-bar',
         };

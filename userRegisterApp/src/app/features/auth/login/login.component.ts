@@ -1,4 +1,4 @@
-import { Router, RouterLink, RouterModule } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { Component } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -34,7 +34,7 @@ export class LoginComponent {
   constructor(
     private snackbarService: SnackbarService,
     private router: Router,
-    private auth:AuthService
+    private auth: AuthService
   ) {}
 
   togglePasswordVisibility() {
@@ -52,14 +52,22 @@ export class LoginComponent {
       return;
     }
 
-    this.loading = true;
-    setTimeout(() => {
-      this.loading = false;
-      console.log(form.value);
-      form.reset();
-      this.snackbarService.showMessage('success');
-      this.auth.logInAccount()
-      this.router.navigate(['/home']);
-    }, 2000); // Simulate a 2-second delay for the login process
+    this.auth.logInAccount(form.value).subscribe({
+      next: (response) => {
+        // Ao receber a resposta com sucesso, navega para a página de home
+        this.auth.setLocalAcess(response.token);
+        this.snackbarService.showMessage('success');
+        this.router.navigate(['/home']);  
+
+        // Resetar o formulário após sucesso
+        form.reset();
+        this.loading = false; // Desativa o loading
+      },
+      error: (e) => {
+        // Exibe a mensagem de erro e desativa o loading
+        this.snackbarService.showMessage(e.error.error);
+        this.loading = false;
+      },
+    });
   }
 }

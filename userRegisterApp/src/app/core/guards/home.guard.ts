@@ -9,7 +9,8 @@ export const homeGuard: CanActivateFn = (route, state) => {
   const auth = inject(AuthService);
   const router = inject(Router);
   const notification = inject(SnackbarService);
-  const isLoggedIn = auth.getLocalData() === 'true';
+  const isLoggedIn = auth.verifyLocalAcess();
+  
   if (!isLoggedIn) {
     notification.showMessage('not_logged_in');
   }

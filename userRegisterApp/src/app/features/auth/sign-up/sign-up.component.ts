@@ -1,10 +1,11 @@
+import { AuthService } from './../../../core/auth/auth.service';
 import { NgClass, NgIf } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { SnackbarService } from '../../../core/services/snackbar.service';
 import { SubmitButtonComponent } from '../../../shared/submit-button/submit-button.component';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-sign-up',
@@ -21,7 +22,11 @@ import { RouterLink } from '@angular/router';
   styleUrl: './sign-up.component.css',
 })
 export class SignUpComponent {
-  constructor(private snackbarService: SnackbarService) {}
+  constructor(
+    private snackbarService: SnackbarService,
+    private auth: AuthService,
+    private router: Router
+  ) {}
   loading: boolean = false;
   isPasswordVisible: boolean = false;
   isPasswordConfirmVisible: boolean = false;
@@ -50,12 +55,27 @@ export class SignUpComponent {
       this.loading = false;
       return;
     }
-    this.loading = true;
-    setTimeout(() => {
+
+    const { password, confirmPassword } = form.value;
+    if (password !== confirmPassword) {
+      this.snackbarService.showMessage('Passwords must be the same');
       this.loading = false;
-      this.snackbarService.showMessage('success');
-      console.log(form.value);
-      form.reset();
-    }, 2000);
+      return;
+    }
+    this.loading = true;
+    this.auth.signUpAccount(form.value).subscribe({
+      next: () => {
+        this.snackbarService.showMessage('success');
+        this.loading = false;
+        form.reset();
+        setTimeout(() => {
+          this.router.navigate(['']);
+        }, 2000);
+      },
+      error: (e) => {
+        this.snackbarService.showMessage(e.error.error);
+        this.loading = false;
+      },
+    });
   }
 }

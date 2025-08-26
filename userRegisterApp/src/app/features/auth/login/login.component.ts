@@ -51,15 +51,13 @@ export class LoginComponent {
       this.loading = false;
       return;
     }
-
+    this.loading = true;
     this.auth.logInAccount(form.value).subscribe({
       next: (response) => {
         // Ao receber a resposta com sucesso, navega para a página de home
         this.auth.setLocalAcess(response.token);
         this.snackbarService.showMessage('success');
-        this.router.navigate(['/home']);  
-
-        // Resetar o formulário após sucesso
+        this.router.navigate(['/home']);
         form.reset();
         this.loading = false; // Desativa o loading
       },

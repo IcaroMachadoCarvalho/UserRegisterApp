@@ -10,4 +10,5 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 })
 export class SubmitButtonComponent {
   @Input() loading:boolean = false;
+  @Input() textBtn:string = "Entrar";
 }

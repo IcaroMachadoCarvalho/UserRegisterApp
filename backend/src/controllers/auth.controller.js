@@ -27,50 +27,40 @@ class authController {
 
   static async signUp(req, res) {
     try {
-      console.log("req.body recebido:", req.body);
       const { username, email, password } = req.body;
-      // verificar email
 
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email)) {
         return res.status(400).json({ error: "Invalid email format" });
       }
 
-      const existingUser = await User.findOne({ username });
-      if (existingUser) {
-        return res.status(400).json({ error: "Username is already taken" });
-      }
+      const existingUser = await User.findOne({
+        $or: [{ username }, { email }],
+      });
 
-      const existingEmail = await User.findOne({ email });
-      if (existingEmail) {
-        return res.status(400).json({ error: "Email is already taken" });
+      if (existingUser) {
+        return res
+          .status(400)
+          .json({ error: "Username or email is already in use" });
       }
 
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(password, salt);
 
-      const newUser = new User({
+      await User.create({
         username,
         email,
         password: hashedPassword,
       });
 
-      if (newUser) {
-        await newUser.save();
-
-        res.status(201).json({
-          message: "Sucessful signUp",
-        });
-      } else {
-        res.status(400).json({ error: "Invalid user data" });
-      }
+      res.status(201).json({ message: "Successful sign up" });
     } catch (error) {
-      console.log("Error in signup controller", error.message);
+      console.error("Error in signup controller:", error.message);
       res.status(500).json({ error: "Internal Server Error" });
     }
   }
 
-  static async forgot(req, res) {
+  static async forgotPassword(req, res) {
     try {
       const { email } = req.body;
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -85,7 +75,7 @@ class authController {
       await User.updateOne({ email }, { accessCode });
       return res
         .status(200)
-        .json({ message: "Created access code", acessCode: accessCode });
+        .json({ message: "Created access code", accessCode: accessCode });
     } catch (error) {
       console.log("Error in signup controller", error.message);
       res.status(500).json({ error: "Internal Server Error" });

@@ -10,12 +10,31 @@ export class AuthService {
   constructor(private http: HttpClient) {}
   apiAcess = environment.apiUrl;
 
-  verifyLocalAcess() {
-    return this.isTokenExpired(this.getLocalData() || '');
-  }
-
   logInAccount(user: any) {
     return this.http.post<any>(`${this.apiAcess}/users/login`, user);
+  }
+
+  signUpAccount(user: any) {
+    return this.http.post<any>(`${this.apiAcess}/users/signup`, user);
+  }
+
+  forgotAcess(user: any) {
+    return this.http.post<any>(`${this.apiAcess}/users/forgot-password`, user);
+  }
+
+  resetAcess(user: any) {
+    return this.http.post<any>(`${this.apiAcess}/users/reset-password`, user);
+  }
+
+  verifyLocalAcess() {
+    const token = this.getLocalData(); // Obtém o token primeiro
+
+    // Verifica se o token existe antes de tentar decodificá-lo
+    if (!token) {
+      return false;
+    }
+
+    return this.isTokenExpired(token);
   }
 
   setLocalAcess(token: string) {
@@ -27,7 +46,7 @@ export class AuthService {
   }
 
   getLocalData() {
-    return localStorage.getItem('user');
+    return localStorage.getItem('user') || '';
   }
 
   private isTokenExpired(token: string) {

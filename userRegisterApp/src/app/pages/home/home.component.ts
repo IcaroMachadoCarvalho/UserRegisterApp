@@ -1,47 +1,55 @@
 import { MatIconModule } from '@angular/material/icon';
 import { NgClass, NgFor } from '@angular/common';
-import { Component } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { AuthService } from '../../core/auth/auth.service';
+import { jwtDecode } from 'jwt-decode';
 
 @Component({
   selector: 'app-home',
-  imports: [NgFor,NgClass, MatIconModule],
+  imports: [NgFor, NgClass, MatIconModule],
   templateUrl: './home.component.html',
-  styleUrl: './home.component.css'
+  styleUrl: './home.component.css',
 })
-export class HomeComponent {
-  constructor(private router:Router){}
-  username:string = "user"
-  isNavOpen:boolean = true;
+export class HomeComponent implements OnInit {
+  constructor(private router: Router, private auth: AuthService) {}
+  username: string = 'user';
+  isNavOpen: boolean = true;
   navLinks = [
     {
-      linkHref: "Home",
-      iconValue: "home"
+      linkHref: 'Home',
+      iconValue: 'home',
     },
     {
-      linkHref: "Dashboard",
-      iconValue: "space_dashboard"
+      linkHref: 'Dashboard',
+      iconValue: 'space_dashboard',
     },
     {
-      linkHref: "Admin",
-      iconValue: "person"
+      linkHref: 'Admin',
+      iconValue: 'person',
     },
     {
-      linkHref: "Message",
-      iconValue: "chat"
+      linkHref: 'Message',
+      iconValue: 'chat',
     },
     {
-      linkHref: "Settings",
-      iconValue: "settings"
-    }
+      linkHref: 'Settings',
+      iconValue: 'settings',
+    },
   ];
 
-  toggleNav(){
+  toggleNav() {
     this.isNavOpen = !this.isNavOpen;
   }
 
-  logOut(){
+  logOut() {
     // Chamar service auth
-    this.router.navigate(['/login'])
+    this.auth.logOutAccount();
+    this.router.navigate(['/login']);
+  }
+
+  ngOnInit(): void {
+    const decodeToken: any = jwtDecode(this.auth.getLocalData());
+    this.username = decodeToken.username;
   }
 }

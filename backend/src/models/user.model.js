@@ -25,7 +25,7 @@ const userSchema = mongoose.Schema({
     type: String, 
     default: "", // Caso o campo não seja preenchido, o valor será uma string vazia
   },
-});
+},{versionKey:false});
 
 // Criando o modelo "User" a partir do esquema definido, para interagir com a coleção "users" no banco de dados
 const User = mongoose.model("User", userSchema);

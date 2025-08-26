@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { SnackbarService } from '../../../core/services/snackbar.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { SubmitButtonComponent } from '../../../shared/submit-button/submit-button.component';
+import { AuthService } from '../../../core/auth/auth.service';
 
 @Component({
   selector: 'app-forgot-password',
@@ -21,18 +22,23 @@ import { SubmitButtonComponent } from '../../../shared/submit-button/submit-butt
   styleUrl: './forgot-password.component.css',
 })
 export class ForgotPasswordComponent {
-  constructor(private snackbarService: SnackbarService) {}
+  constructor(
+    private snackbarService: SnackbarService,
+    private auth: AuthService
+  ) {}
 
   loading: boolean = false;
+  isPasswordVisible: boolean = false;
+  isConfirmPasswordVisible: boolean = false;
+  isResetFormVisible: boolean = true;
+  accessCodeValue: string = '';
 
   forgotUser = {
     email: '',
+    accessCode: '',
     newPassword: '',
     confirmPassword: '',
   };
-
-  isPasswordVisible: boolean = false;
-  isConfirmPasswordVisible: boolean = false;
 
   togglePasswordVisibility() {
     this.isPasswordVisible = !this.isPasswordVisible;
@@ -42,6 +48,16 @@ export class ForgotPasswordComponent {
     this.isConfirmPasswordVisible = !this.isConfirmPasswordVisible;
   }
 
+  // Alterna estado de carregamento
+  toggleLoading(state?: boolean) {
+    this.loading = state !== undefined ? state : !this.loading;
+  }
+  // Alterna estado para motrar a outra parte do formulário de reset de senha
+  toggleResetFormVisibility(state?: boolean) {
+    this.isResetFormVisible =
+      state !== undefined ? state : !this.isResetFormVisible;
+  }
+
   onForgotPassword(form: any) {
     if (form.invalid) {
       console.log('Formulário inválido!');
@@ -49,16 +65,63 @@ export class ForgotPasswordComponent {
         control.markAsTouched();
       });
       this.snackbarService.showMessage('warning');
-      this.loading = false;
+      this.toggleLoading(false);
       return;
     }
-    this.loading = true;
-    setTimeout(() => {
-      this.loading = false;
-      this.snackbarService.showMessage('success');
-      console.log('Login successful');
-      console.log(form.value);
-      form.reset();
-    }, 2000);
+    const { email, newPassword, confirmPassword, accessCode } = form.value;
+    const isInitialRecoveryStep =
+      email && !newPassword && !confirmPassword && !accessCode;
+    if (isInitialRecoveryStep) {
+      this.toggleLoading(true);
+      this.auth.forgotAcess({ email }).subscribe({
+        next: (response) => {
+          this.accessCodeValue = response.accessCode;
+          this.snackbarService.showMessage(
+            'Digite o código de acesso que foi enviado para você'
+          );
+          this.toggleLoading(false);
+          this.toggleResetFormVisibility(false);
+          return;
+        },
+        error: (e) => {
+          this.snackbarService.showMessage(e.error.error);
+          this.toggleResetFormVisibility(true);
+          this.toggleLoading(false);
+          return;
+        },
+      });
+    }
+
+    if (newPassword !== confirmPassword) {
+      this.snackbarService.showMessage('Passwords must be the same');
+      this.toggleLoading(false);
+      this.toggleResetFormVisibility(true);
+      return;
+    }
+    const isLastRecoveryStep =
+      email && newPassword && confirmPassword && accessCode;
+    if (isLastRecoveryStep) {
+      this.toggleLoading(true);
+      this.auth
+        .resetAcess({
+          email,
+          accessCode,
+          newPassword,
+          confirmPassword,
+        })
+        .subscribe({
+          next: () => {
+            this.snackbarService.showMessage('success');
+            this.toggleLoading(false);
+            this.toggleResetFormVisibility(true);
+            console.log('Login successful');
+            form.reset();
+          },
+          error: (e) => {
+            this.snackbarService.showMessage(e.error.error);
+            this.toggleLoading(false);
+          },
+        });
+    }
   }
 }
